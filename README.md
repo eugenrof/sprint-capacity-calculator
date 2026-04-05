@@ -1,18 +1,18 @@
-# Sprint Capacity Optimizer | Team Velocity Tool
+# Sprint Capacity Planner | Agile Team Velocity Tool
 
-[![GitHub Pages](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=github)](https://eugenrof.github.io/sprint-capacity-calculator)
+[![GitHub Pages](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=github)](https://eugenrof.github.io/sprint-capacity-planner)
 
 ## 📋 Purpose & Professional Impact
 
 In the **Scrum Framework**, the Sprint Planning event is the heartbeat of a team's cycle. However, one of the most persistent challenges for a **Scrum Master** is moving a team from "gut feeling" to data-driven commitment.
 
-**Sprint Capacity Pro** was developed as a specialized utility to bridge the gap between abstract story points and concrete human availability. By providing a structured, mathematical approach to team capacity, it ensures that the "Forecast" made at the beginning of a sprint is both realistic and sustainable.
+**Sprint Capacity Planner** was developed as a specialized utility to bridge the gap between abstract story points and concrete human availability. By providing a structured, mathematical approach to team capacity, it ensures that the "Forecast" made at the beginning of a sprint is both realistic and sustainable.
 
 ### Why this tool?
 
 * **Precision Planning**: Replaces vague estimates with a concrete "Available Days" metric, allowing the team to see exactly how holidays and personal leave impact their delivery power.
 * **Efficiency**: Reduces the time spent on manual spreadsheets or fighting complex configurations in heavy Jira/Azure DevOps environments during live planning sessions.
-* **Transparency**: Provides a visual, shareable "source of truth" that helps **Product Owners** and stakeholders understand exactly why a team’s velocity might fluctuate in a specific sprint.
+* **Transparency**: Provides a visual, shareable "source of truth" that helps **Product Owners** and stakeholders understand exactly why a team’s velocity might fluctuate in a specific sprint (e.g., due to public holidays or team training).
 * **Zero Overhead**: A focused, high-utility micro-app designed for immediate, zero-setup capacity modeling that can be exported or shared instantly.
 
 ---
@@ -59,13 +59,13 @@ This tool is specifically crafted for professionals operating within Agile and S
 
 To ensure maximum compatibility across all Markdown viewers, the tool uses the following logic for real-time modeling:
 
-1.  **Working Window** `Sprint Days - Public Holidays`
+1. **Working Window** `Sprint Days - Public Holidays`
 
-2.  **Individual Availability** `(Working Window - Individual Days Off) × (Allocation % / 100)`
+2. **Individual Availability** `(Working Window - Individual Days Off) × (Allocation % / 100)`
 
-3.  **Team Capacity %** `Total Available Days / (Team Size × Sprint Days)`
+3. **Team Capacity %** `Total Available Days / (Team Size × Sprint Days)`
 
-4.  **Recommended Velocity** `Average Velocity × Team Capacity %`
+4. **Recommended Velocity** `Average Velocity × Team Capacity %`
 
 ### Built With
 
@@ -89,4 +89,4 @@ To ensure maximum compatibility across all Markdown viewers, the tool uses the f
 ## ⚖️ License & Credits
 
 Developed by **Eugen Rof** (2026). Part of the **Scrum Master Toolset**.
-[GitHub Repository](https://github.com/eugenrof/sprint-capacity-calculator)
+[GitHub Repository](https://github.com/eugenrof/sprint-capacity-planner)
