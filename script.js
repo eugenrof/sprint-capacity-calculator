@@ -249,7 +249,6 @@ function exportToPDF() {
         startY: 35,
         head: [['Sprint Metric', 'Value']],
         body: [
-            ['Team Name', teamDisplayName],
             ['Sprint Length', document.getElementById('sprintDays').value + ' Days'],
             ['Calculated Capacity', document.getElementById('resCapacity').innerText],
             ['Recommended Velocity', document.getElementById('resPlanVelocity').innerText + ' Story Points']
