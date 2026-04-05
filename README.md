@@ -1,5 +1,7 @@
 # Sprint Capacity Optimizer | Team Velocity Tool
 
+[![GitHub Pages](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=github)](https://eugenrof.github.io/sprint-capacity-calculator)
+
 ## 📋 Purpose & Professional Impact
 
 In the **Scrum Framework**, the Sprint Planning event is the heartbeat of a team's cycle. However, one of the most persistent challenges for a **Scrum Master** is moving a team from "gut feeling" to data-driven commitment.
