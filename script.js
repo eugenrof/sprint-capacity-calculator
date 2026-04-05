@@ -80,11 +80,11 @@ function updateMainHeader(name) {
     const titleBase = "Sprint Capacity Planner";
     const h1 = document.querySelector('h1');
     
-    // Logic: If name exists, show "Page Title | Name", otherwise just "Page Title"
+    // Logic: Brand first, then Team Name
     const newTitle = name.trim() ? `${titleBase} | ${name}` : titleBase;
     
     if (h1) h1.innerText = newTitle;
-    document.title = newTitle; // This also updates the browser tab title!
+    document.title = newTitle; 
 }
 
 function renderTable() {
@@ -98,7 +98,7 @@ function renderTable() {
         row.innerHTML = `
             <td class="px-6 py-4">
                 <input type="text" value="${member.name}" onchange="updateMember(${index}, 'name', this.value)" 
-                class="w-full bg-transparent font-semibold border-none focus:ring-2 focus:ring-emerald-500 rounded px-1 transition-all">
+                class="w-full bg-transparent font-semibold border-none focus:ring-2 focus:ring-emerald-500 rounded px-1 transition-all text-center">
             </td>
             <td class="px-6 py-4 text-center">
                 <input type="number" value="${member.allocation}" onchange="updateMember(${index}, 'allocation', this.value)" 
@@ -185,7 +185,6 @@ function updateMember(index, field, value) {
         team[index][field] = num;
     }
 
-    // Only re-render if data correction was needed to prevent focus loss
     if (field !== 'name') renderTable();
     else calculate();
 }
@@ -210,7 +209,6 @@ function removeRow(index) {
 function validateGlobal(input) {
     let val = parseFloat(input.value) || 0;
     const sprintDays = document.getElementById('sprintDays');
-    const holidays = document.getElementById('publicHolidays');
 
     if (val < 0) {
         showToast("⚠️ Values cannot be negative.");
@@ -235,10 +233,11 @@ function exportToPDF() {
     const teamDisplayName = teamNameInput || "Team";
     const primaryEmerald = [5, 150, 105];
 
-    // Header
+    // Header: Brand First | Team Name
     doc.setFontSize(22);
     doc.setTextColor(primaryEmerald[0], primaryEmerald[1], primaryEmerald[2]);
-    doc.text(`${teamDisplayName} | Sprint Capacity Planner`, 14, 22);
+    const pdfTitle = teamNameInput ? `Sprint Capacity Planner | ${teamDisplayName}` : "Sprint Capacity Planner";
+    doc.text(pdfTitle, 14, 22);
 
     doc.setFontSize(10);
     doc.setTextColor(100, 116, 139);
@@ -272,9 +271,10 @@ function exportToPDF() {
         body: rows,
         headStyles: { fillColor: primaryEmerald, halign: 'center' },
         styles: { halign: 'center' },
-        columnStyles: { 0: { halign: 'left' } }
+        columnStyles: { 0: { halign: 'center' } } // Centered Member Names
     });
 
+    // File Name: Sprint_Capacity_Report_TeamName.pdf
     doc.save(`Sprint_Capacity_Report_${teamDisplayName.replace(/\s+/g, '_')}.pdf`);
 }
 
