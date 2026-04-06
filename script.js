@@ -2,7 +2,7 @@
  * Sprint Capacity Planner
  * Author: Eugen Rof
  * Year: 2026
- * Description: Agile planning tool with LocalStorage persistence and on-demand Share Links.
+ * Description: Agile planning tool with LocalStorage persistence, Date Validation, and PDF Export.
  */
 
 let team = [
@@ -36,6 +36,8 @@ function saveState() {
     const rawName = document.getElementById('teamName').value;
     const stateToSave = {
         teamName: rawName.substring(0, 50),
+        startDate: document.getElementById('startDate').value,
+        endDate: document.getElementById('endDate').value,
         sprintDays: document.getElementById('sprintDays').value,
         holidays: document.getElementById('publicHolidays').value,
         velocity: document.getElementById('avgVelocity').value,
@@ -53,6 +55,8 @@ function loadState() {
             document.getElementById('teamName').value = teamName;
             updateMainHeader(teamName);
 
+            document.getElementById('startDate').value = params.get('sd') || "";
+            document.getElementById('endDate').value = params.get('ed') || "";
             document.getElementById('sprintDays').value = params.get('s') || 15;
             document.getElementById('publicHolidays').value = params.get('h') || 0;
             document.getElementById('avgVelocity').value = params.get('v') || 45;
@@ -84,6 +88,8 @@ function loadState() {
             const teamName = (savedData.teamName || "").substring(0, 50);
             document.getElementById('teamName').value = teamName;
             updateMainHeader(teamName);
+            document.getElementById('startDate').value = savedData.startDate || "";
+            document.getElementById('endDate').value = savedData.endDate || "";
             document.getElementById('sprintDays').value = savedData.sprintDays || 15;
             document.getElementById('publicHolidays').value = savedData.holidays || 0;
             document.getElementById('avgVelocity').value = savedData.velocity || 45;
@@ -98,16 +104,13 @@ function loadState() {
  * Generate Share Link
  */
 function shareConfiguration() {
-    const teamName = document.getElementById('teamName').value;
-    const sprintDays = document.getElementById('sprintDays').value;
-    const holidays = document.getElementById('publicHolidays').value;
-    const velocity = document.getElementById('avgVelocity').value;
-
     const params = new URLSearchParams();
-    params.set('teamName', teamName);
-    params.set('s', sprintDays);
-    params.set('h', holidays);
-    params.set('v', velocity);
+    params.set('teamName', document.getElementById('teamName').value);
+    params.set('sd', document.getElementById('startDate').value);
+    params.set('ed', document.getElementById('endDate').value);
+    params.set('s', document.getElementById('sprintDays').value);
+    params.set('h', document.getElementById('publicHolidays').value);
+    params.set('v', document.getElementById('avgVelocity').value);
 
     const teamData = team.map(m => `${encodeURIComponent(m.name)}|${m.allocation}|${m.daysOff}`).join(',');
     params.set('t', teamData);
@@ -181,7 +184,6 @@ function calculate() {
     team.forEach((member, index) => {
         const available = Math.max(0, (workingWindow - member.daysOff) * (member.allocation / 100));
         const cell = document.getElementById(`avail-${index}`);
-        // parseFloat removes trailing .0
         if (cell) cell.innerText = parseFloat(available.toFixed(1));
         totalAvailableDays += available;
     });
@@ -198,7 +200,6 @@ function updateDashboard(totalDays, capacity, plan) {
     const velocityText = document.getElementById('resPlanVelocity');
     const bar = document.getElementById('capacityBar');
 
-    // parseFloat removes trailing .0
     document.getElementById('resTotalDays').innerText = parseFloat(totalDays.toFixed(1)) + ' Days';
     document.getElementById('resCapacity').innerText = (capacity * 100).toFixed(0) + '%';
     velocityText.innerText = parseFloat(plan.toFixed(1));
@@ -231,7 +232,6 @@ function updateMember(index, field, value) {
             showToast("⚠️ Allocation capped at 100%.");
             num = 100;
         }
-        // Limit Days Off to Sprint Length
         if (field === 'daysOff') {
             const sprintLength = parseFloat(document.getElementById('sprintDays').value) || 0;
             if (num > sprintLength) {
@@ -266,13 +266,26 @@ function removeRow(index) {
 function validateGlobal(input) {
     let val = parseFloat(input.value) || 0;
     const sprintDaysInput = document.getElementById('sprintDays');
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
 
-    if (val < 0) {
+    if (input.type === 'number' && val < 0) {
         showToast("⚠️ Values cannot be negative.");
         input.value = 0;
     }
 
-    // Clamp existing team daysOff if sprint length decreases
+    // Date Validation: Ensure End Date is after Start Date
+    if (input.id === 'startDate' || input.id === 'endDate') {
+        const start = new Date(startDateInput.value);
+        const end = new Date(endDateInput.value);
+
+        if (startDateInput.value && endDateInput.value && end < start) {
+            showToast("⚠️ End Date cannot be before Start Date.");
+            input.value = "";
+            return;
+        }
+    }
+
     if (input.id === 'sprintDays') {
         team.forEach(member => {
             if (member.daysOff > val) member.daysOff = val;
@@ -284,6 +297,7 @@ function validateGlobal(input) {
         showToast("⚠️ Holidays cannot exceed Sprint Days.");
         input.value = sprintDaysInput.value;
     }
+
     calculate();
 }
 
@@ -297,6 +311,8 @@ function exportToPDF() {
     const teamNameInput = document.getElementById('teamName').value.trim().substring(0, 50);
     const teamDisplayName = teamNameInput || "Team";
     const primaryEmerald = [16, 185, 129]; 
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
 
     doc.setFontSize(22);
     doc.setTextColor(primaryEmerald[0], primaryEmerald[1], primaryEmerald[2]);
@@ -305,13 +321,15 @@ function exportToPDF() {
 
     doc.setFontSize(10);
     doc.setTextColor(100, 116, 139);
-    doc.text(`Generated on ${new Date().toLocaleDateString()}`, 14, 28);
+    const dateRange = (startDate && endDate) ? ` (${startDate} to ${endDate})` : "";
+    doc.text(`Generated on ${new Date().toLocaleDateString()}${dateRange}`, 14, 28);
 
     doc.autoTable({
         startY: 35,
         head: [['Sprint Metric', 'Value']],
         body: [
-            ['Sprint Length', document.getElementById('sprintDays').value + ' Days'],
+            ['Sprint Duration', (startDate && endDate) ? `${startDate} - ${endDate}` : 'Not Specified'],
+            ['Sprint Working Days', document.getElementById('sprintDays').value + ' Days'],
             ['Public Holidays', document.getElementById('publicHolidays').value + ' Days'],
             ['Calculated Capacity', document.getElementById('resCapacity').innerText],
             ['Recommended Velocity', document.getElementById('resPlanVelocity').innerText + ' Story Points']
