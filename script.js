@@ -19,16 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
     loadState();
     renderTable();
 
-    // Listener for live title updates and character limit validation
     const teamNameInput = document.getElementById('teamName');
     teamNameInput.addEventListener('input', (e) => {
         const value = e.target.value;
-        
-        // Validation message for character limit
-        if (value.length >= 25) {
-            showToast("⚠️ Team name reached the 25 character limit!");
+        if (value.length >= 50) {
+            showToast("⚠️ Team name reached the 50 character limit");
         }
-
         updateMainHeader(value);
         saveState();
     });
@@ -40,24 +36,20 @@ document.addEventListener('DOMContentLoaded', () => {
 function saveState() {
     const rawName = document.getElementById('teamName').value;
     const stateToSave = {
-        teamName: rawName.substring(0, 50), // Enforce 50 char limit on save
+        teamName: rawName.substring(0, 50),
         sprintDays: document.getElementById('sprintDays').value,
         holidays: document.getElementById('publicHolidays').value,
         velocity: document.getElementById('avgVelocity').value,
         team: team
     };
-    
-    // Save to Local Storage (Quiet persistence)
     localStorage.setItem('sprintPlannerState', JSON.stringify(stateToSave));
 }
 
 function loadState() {
     const params = new URLSearchParams(window.location.search);
     
-    // 1. Check if we are opening a Shared Link (URL has data)
     if (params.has('t') || params.has('s')) {
         try {
-            // Enforce 50 char limit when loading from URL
             const teamName = (params.get('teamName') || "").substring(0, 50);
             document.getElementById('teamName').value = teamName;
             updateMainHeader(teamName);
@@ -77,8 +69,6 @@ function loadState() {
                     };
                 });
             }
-            
-            // Save this URL data to LocalStorage and CLEAN the URL
             saveState();
             window.history.replaceState(null, null, window.location.pathname);
             showToast("✅ Shared plan loaded and saved!");
@@ -88,7 +78,6 @@ function loadState() {
         }
     }
 
-    // 2. FALLBACK: Load from Local Storage for returning users
     const localData = localStorage.getItem('sprintPlannerState');
     if (localData) {
         try {
@@ -108,7 +97,6 @@ function loadState() {
 
 /**
  * Generate Share Link
- * Creates a URL with all current data and copies it to clipboard
  */
 function shareConfiguration() {
     const teamName = document.getElementById('teamName').value;
@@ -140,7 +128,6 @@ function shareConfiguration() {
 function updateMainHeader(name) {
     const titleBase = "Sprint Capacity Planner";
     const h1 = document.querySelector('h1');
-    // Ensure the header display also respects the 50 char limit
     const cleanName = name.trim().substring(0, 50);
     const newTitle = cleanName ? `${titleBase} | ${cleanName}` : titleBase;
     
@@ -195,7 +182,8 @@ function calculate() {
     team.forEach((member, index) => {
         const available = Math.max(0, (workingWindow - member.daysOff) * (member.allocation / 100));
         const cell = document.getElementById(`avail-${index}`);
-        if (cell) cell.innerText = Number(available.toFixed(1));
+        // parseFloat removes trailing .0
+        if (cell) cell.innerText = parseFloat(available.toFixed(1));
         totalAvailableDays += available;
     });
 
@@ -211,9 +199,10 @@ function updateDashboard(totalDays, capacity, plan) {
     const velocityText = document.getElementById('resPlanVelocity');
     const bar = document.getElementById('capacityBar');
 
-    document.getElementById('resTotalDays').innerText = Number(totalDays.toFixed(1)) + ' Days';
+    // parseFloat removes trailing .0
+    document.getElementById('resTotalDays').innerText = parseFloat(totalDays.toFixed(1)) + ' Days';
     document.getElementById('resCapacity').innerText = (capacity * 100).toFixed(0) + '%';
-    velocityText.innerText = Number(plan.toFixed(1));
+    velocityText.innerText = parseFloat(plan.toFixed(1));
 
     const perc = capacity * 100;
     bar.style.width = Math.min(100, perc) + '%';
@@ -235,20 +224,15 @@ function updateMember(index, field, value) {
         saveState();
     } else {
         let num = parseFloat(value) || 0;
-        
-        // 1. Common validation: No negative numbers
         if (num < 0) {
             showToast("⚠️ Values cannot be negative.");
             num = 0;
         }
-        
-        // 2. Specific validation for Allocation
         if (field === 'allocation' && num > 100) {
             showToast("⚠️ Allocation capped at 100%.");
             num = 100;
         }
-
-        // 3. NEW: Specific validation for Days Off (cannot exceed Sprint Length)
+        // Limit Days Off to Sprint Length
         if (field === 'daysOff') {
             const sprintLength = parseFloat(document.getElementById('sprintDays').value) || 0;
             if (num > sprintLength) {
@@ -256,9 +240,8 @@ function updateMember(index, field, value) {
                 num = sprintLength;
             }
         }
-
         team[index][field] = num;
-        renderTable(); // Re-render to show the corrected value in the input
+        renderTable();
     }
 }
 
@@ -283,16 +266,24 @@ function removeRow(index) {
  */
 function validateGlobal(input) {
     let val = parseFloat(input.value) || 0;
-    const sprintDays = document.getElementById('sprintDays');
+    const sprintDaysInput = document.getElementById('sprintDays');
 
     if (val < 0) {
         showToast("⚠️ Values cannot be negative.");
         input.value = 0;
     }
 
-    if (input.id === 'publicHolidays' && val > parseFloat(sprintDays.value)) {
+    // Clamp existing team daysOff if sprint length decreases
+    if (input.id === 'sprintDays') {
+        team.forEach(member => {
+            if (member.daysOff > val) member.daysOff = val;
+        });
+        renderTable();
+    }
+
+    if (input.id === 'publicHolidays' && val > parseFloat(sprintDaysInput.value)) {
         showToast("⚠️ Holidays cannot exceed Sprint Days.");
-        input.value = sprintDays.value;
+        input.value = sprintDaysInput.value;
     }
     calculate();
 }
@@ -338,7 +329,7 @@ function exportToPDF() {
         m.name,
         m.allocation + '%',
         m.daysOff,
-        (Math.max(0, workingWindow - m.daysOff) * (m.allocation / 100)).toFixed(1)
+        parseFloat((Math.max(0, workingWindow - m.daysOff) * (m.allocation / 100)).toFixed(1))
     ]);
 
     doc.autoTable({
