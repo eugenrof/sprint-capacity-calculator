@@ -15,8 +15,6 @@ In the **Scrum Framework**, the Sprint Planning event is the heartbeat of a team
 * **Transparency**: Provides a visual, shareable "source of truth" that helps **Product Owners** and stakeholders understand exactly why a team’s velocity might fluctuate in a specific sprint (e.g., due to public holidays or team training).
 * **Zero Overhead**: A focused, high-utility micro-app designed for immediate, zero-setup capacity modeling that can be exported or shared instantly.
 
----
-
 ## 📊 Reference Baseline
 
 The application initializes with a **pre-configured reference model** to demonstrate its logic in a live scenario. These values are intended as a functional starting point and should be adjusted to reflect your specific team context:
@@ -38,6 +36,20 @@ This tool is specifically crafted for professionals operating within Agile and S
 * **Team Leads & Engineering Managers**: To model various "what-if" scenarios regarding team allocation and upcoming leave.
 * **Self-Organizing Development Teams**: To take ownership of their own capacity and provide more accurate forecasts to their stakeholders.
 
+---
+
+## 📂 Project Structure
+
+```text
+sprint-capacity-planner/
+├── images/
+│   ├── favicon.ico          # Browser tab icon
+│   └── share-preview.png    # Open Graph (OG) social media image
+├── index.html               # Main application structure & SEO meta tags
+├── script.js                # Core logic, state management & PDF engine
+├── style.css                # Custom glassmorphism & Tailwind extensions
+└── README.md                # Project documentation and methodology
+```
 ---
 
 ## 🛠️ Key Features
