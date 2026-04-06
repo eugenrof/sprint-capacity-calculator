@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     teamNameInput.addEventListener('input', (e) => {
         const value = e.target.value;
         if (value.length >= 50) {
-            showToast("⚠️ Team name reached the 50 character limit");
+            showToast("⚠️ Team name reached the 25 character limit");
         }
         updateMainHeader(value);
         saveState();
