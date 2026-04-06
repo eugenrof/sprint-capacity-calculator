@@ -308,7 +308,7 @@ function exportToPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    const teamNameInput = document.getElementById('teamName').value.trim().substring(0, 50);
+    const teamNameInput = document.getElementById('teamName').value.trim().substring(0, 25);
     const teamDisplayName = teamNameInput || "Team";
     const primaryEmerald = [16, 185, 129]; 
     const startDate = document.getElementById('startDate').value;
