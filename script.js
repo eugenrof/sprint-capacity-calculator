@@ -2,7 +2,7 @@
  * Sprint Capacity Planner
  * Author: Eugen Rof
  * Year: 2026
- * Description: High-performance Agile planning tool with URL state persistence and PDF export.
+ * Description: Agile planning tool with LocalStorage persistence and on-demand Share Links.
  */
 
 // --- Initial State ---
@@ -19,9 +19,17 @@ document.addEventListener('DOMContentLoaded', () => {
     loadState();
     renderTable();
 
-    // Listener for live title updates
-    document.getElementById('teamName').addEventListener('input', (e) => {
-        updateMainHeader(e.target.value);
+    // Listener for live title updates and character limit validation
+    const teamNameInput = document.getElementById('teamName');
+    teamNameInput.addEventListener('input', (e) => {
+        const value = e.target.value;
+        
+        // Validation message for character limit
+        if (value.length >= 25) {
+            showToast("⚠️ Team name reached the 25 character limit!");
+        }
+
+        updateMainHeader(value);
         saveState();
     });
 });
@@ -30,46 +38,100 @@ document.addEventListener('DOMContentLoaded', () => {
  * Persistence & State Management
  */
 function saveState() {
-    const params = new URLSearchParams();
-    params.set('teamName', document.getElementById('teamName').value);
-    params.set('s', document.getElementById('sprintDays').value);
-    params.set('h', document.getElementById('publicHolidays').value);
-    params.set('v', document.getElementById('avgVelocity').value);
-
-    const teamData = team.map(m => `${encodeURIComponent(m.name)}|${m.allocation}|${m.daysOff}`).join(',');
-    params.set('t', teamData);
-
-    const newUrl = `${window.location.pathname}?${params.toString()}`;
-    window.history.replaceState(null, null, newUrl);
+    const rawName = document.getElementById('teamName').value;
+    const stateToSave = {
+        teamName: rawName.substring(0, 50), // Enforce 50 char limit on save
+        sprintDays: document.getElementById('sprintDays').value,
+        holidays: document.getElementById('publicHolidays').value,
+        velocity: document.getElementById('avgVelocity').value,
+        team: team
+    };
+    
+    // Save to Local Storage (Quiet persistence)
+    localStorage.setItem('sprintPlannerState', JSON.stringify(stateToSave));
 }
 
 function loadState() {
     const params = new URLSearchParams(window.location.search);
-    if (!params.has('t') && !params.has('s')) return;
+    
+    // 1. Check if we are opening a Shared Link (URL has data)
+    if (params.has('t') || params.has('s')) {
+        try {
+            // Enforce 50 char limit when loading from URL
+            const teamName = (params.get('teamName') || "").substring(0, 50);
+            document.getElementById('teamName').value = teamName;
+            updateMainHeader(teamName);
 
-    try {
-        const teamName = params.get('teamName') || "";
-        document.getElementById('teamName').value = teamName;
-        updateMainHeader(teamName);
+            document.getElementById('sprintDays').value = params.get('s') || 15;
+            document.getElementById('publicHolidays').value = params.get('h') || 0;
+            document.getElementById('avgVelocity').value = params.get('v') || 45;
 
-        document.getElementById('sprintDays').value = params.get('s') || 15;
-        document.getElementById('publicHolidays').value = params.get('h') || 0;
-        document.getElementById('avgVelocity').value = params.get('v') || 45;
-
-        const teamParam = params.get('t');
-        if (teamParam) {
-            team = teamParam.split(',').map(str => {
-                const [name, allocation, daysOff] = str.split('|');
-                return {
-                    name: decodeURIComponent(name),
-                    allocation: parseFloat(allocation) || 100,
-                    daysOff: parseFloat(daysOff) || 0
-                };
-            });
+            const teamParam = params.get('t');
+            if (teamParam) {
+                team = teamParam.split(',').map(str => {
+                    const [name, allocation, daysOff] = str.split('|');
+                    return {
+                        name: decodeURIComponent(name),
+                        allocation: parseFloat(allocation) || 100,
+                        daysOff: parseFloat(daysOff) || 0
+                    };
+                });
+            }
+            
+            // Save this URL data to LocalStorage and CLEAN the URL
+            saveState();
+            window.history.replaceState(null, null, window.location.pathname);
+            showToast("✅ Shared plan loaded and saved!");
+            return; 
+        } catch (e) {
+            console.error("URL State Recovery Failed", e);
         }
-    } catch (e) {
-        console.error("State Recovery Failed", e);
     }
+
+    // 2. FALLBACK: Load from Local Storage for returning users
+    const localData = localStorage.getItem('sprintPlannerState');
+    if (localData) {
+        try {
+            const savedData = JSON.parse(localData);
+            const teamName = (savedData.teamName || "").substring(0, 50);
+            document.getElementById('teamName').value = teamName;
+            updateMainHeader(teamName);
+            document.getElementById('sprintDays').value = savedData.sprintDays || 15;
+            document.getElementById('publicHolidays').value = savedData.holidays || 0;
+            document.getElementById('avgVelocity').value = savedData.velocity || 45;
+            team = savedData.team || team;
+        } catch (e) {
+            console.error("LocalStorage Recovery Failed", e);
+        }
+    }
+}
+
+/**
+ * Generate Share Link
+ * Creates a URL with all current data and copies it to clipboard
+ */
+function shareConfiguration() {
+    const teamName = document.getElementById('teamName').value;
+    const sprintDays = document.getElementById('sprintDays').value;
+    const holidays = document.getElementById('publicHolidays').value;
+    const velocity = document.getElementById('avgVelocity').value;
+
+    const params = new URLSearchParams();
+    params.set('teamName', teamName);
+    params.set('s', sprintDays);
+    params.set('h', holidays);
+    params.set('v', velocity);
+
+    const teamData = team.map(m => `${encodeURIComponent(m.name)}|${m.allocation}|${m.daysOff}`).join(',');
+    params.set('t', teamData);
+
+    const shareUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+
+    navigator.clipboard.writeText(shareUrl).then(() => {
+        showToast("🔗 Share link copied to clipboard!");
+    }).catch(err => {
+        console.error('Could not copy text: ', err);
+    });
 }
 
 /**
@@ -78,7 +140,9 @@ function loadState() {
 function updateMainHeader(name) {
     const titleBase = "Sprint Capacity Planner";
     const h1 = document.querySelector('h1');
-    const newTitle = name.trim() ? `${titleBase} | ${name}` : titleBase;
+    // Ensure the header display also respects the 50 char limit
+    const cleanName = name.trim().substring(0, 50);
+    const newTitle = cleanName ? `${titleBase} | ${cleanName}` : titleBase;
     
     if (h1) h1.innerText = newTitle;
     document.title = newTitle; 
@@ -92,7 +156,6 @@ function renderTable() {
     team.forEach((member, index) => {
         const row = document.createElement('tr');
         row.className = "row-hover transition-colors group";
-        // text-center on mobile, text-left on md screens for the name input
         row.innerHTML = `
             <td class="px-6 py-4">
                 <input type="text" value="${member.name}" onchange="updateMember(${index}, 'name', this.value)" 
@@ -169,6 +232,7 @@ function updateDashboard(totalDays, capacity, plan) {
 function updateMember(index, field, value) {
     if (field === 'name') {
         team[index].name = value || "New Member";
+        saveState();
     } else {
         let num = parseFloat(value) || 0;
         if (num < 0) {
@@ -180,21 +244,21 @@ function updateMember(index, field, value) {
             num = 100;
         }
         team[index][field] = num;
+        renderTable();
     }
-
-    if (field !== 'name') renderTable();
-    else calculate();
 }
 
 function addRow() {
     team.push({ name: 'New Member', allocation: 100, daysOff: 0 });
     renderTable();
+    saveState();
 }
 
 function removeRow(index) {
     if (team.length > 1) {
         team.splice(index, 1);
         renderTable();
+        saveState();
     } else {
         showToast("⚠️ Team must have at least one member.");
     }
@@ -226,7 +290,7 @@ function exportToPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    const teamNameInput = document.getElementById('teamName').value.trim();
+    const teamNameInput = document.getElementById('teamName').value.trim().substring(0, 50);
     const teamDisplayName = teamNameInput || "Team";
     const primaryEmerald = [16, 185, 129]; 
 
@@ -267,7 +331,6 @@ function exportToPDF() {
         startY: doc.lastAutoTable.finalY + 10,
         head: [["Member Name", "Allocation", "Days Off", "Available Days"]],
         body: rows,
-        // Centering all columns in PDF for visual balance
         headStyles: { fillColor: primaryEmerald, halign: 'center' },
         styles: { halign: 'center' },
         columnStyles: { 
@@ -286,6 +349,7 @@ function exportToPDF() {
  */
 function resetToDefault() {
     if (confirm("Reset all data? This cannot be undone.")) {
+        localStorage.removeItem('sprintPlannerState');
         window.location.href = window.location.pathname;
     }
 }
