@@ -156,44 +156,53 @@ body {
 
 .btn-reset:hover svg { transform: rotate(-180deg); }
 
-/* --- Form Inputs (Alignment Fix) --- */
-.input-group { width: 100%; }
-
-.input-group label {
-    display: block; font-size: 0.7rem; font-weight: 800;
-    text-transform: uppercase; color: #64748b; margin-bottom: 0.4rem;
-    letter-spacing: 0.025em; transition: color 0.3s ease;
+/* --- Form Inputs (MOBILE ALIGNMENT FIX) --- */
+.input-group { 
+    width: 100%; 
 }
 
-/* Force every input type to be identical in size */
+.input-group label {
+    display: block; 
+    font-size: 0.7rem; 
+    font-weight: 800;
+    text-transform: uppercase; 
+    color: #64748b; 
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.025em;
+}
+
 .input-group input {
-    width: 100%; 
-    height: 52px; /* Fixed height ensures Start/End Date match others */
+    /* Critical Fix: Ensure width is exactly 100% of parent container */
+    width: 100% !important; 
+    display: block !important;
+    height: 52px; 
     background: rgba(255, 255, 255, 0.95);
     border: 1px solid #e2e8f0; 
     border-radius: 0.75rem;
     padding: 0 1rem; 
     font-weight: 600;
-    transition: all 0.2s ease; 
     color: #1e293b;
     font-size: 16px;
-    display: block;
-    -webkit-appearance: none; /* Reset first to build clean */
+    outline: none;
+    transition: all 0.2s ease;
+    /* Reset browser defaults that cause width issues */
+    -webkit-appearance: none;
     appearance: none;
+    box-sizing: border-box;
 }
 
-/* Specific resets for Number and Date to show icons while maintaining height */
+/* Re-enable and Force Visibility of native buttons with full opacity */
 input[type="number"] {
     -webkit-appearance: number-input;
     appearance: auto;
 }
 
 input[type="date"] {
-    -webkit-appearance: listbox; /* This helps Safari/iOS keep it looking like a field */
+    /* Listbox appearance helps mobile Safari maintain full-width behavior */
+    -webkit-appearance: listbox;
     appearance: auto;
 }
 
-/* Force Full Opacity and Visibility for Icons */
 input::-webkit-inner-spin-button,
 input::-webkit-outer-spin-button {
     -webkit-appearance: inner-spin-button !important;
@@ -205,11 +214,9 @@ input::-webkit-outer-spin-button {
 input::-webkit-calendar-picker-indicator {
     opacity: 1 !important;
     cursor: pointer;
-    padding: 2px;
 }
 
 input:focus {
-    outline: none !important;
     border-color: #10b981 !important;
     background-color: #ffffff !important;
     box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
