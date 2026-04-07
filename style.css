@@ -49,14 +49,13 @@ body {
         font-size: 1.75rem !important;
     }
 
-    /* Strict alignment for mobile fields to prevent iPhone overflow */
     input[type="date"], 
     input[type="text"], 
     input[type="number"] {
         width: 100% !important;
         max-width: 100% !important;
         min-width: 0 !important;
-        font-size: 16px !important; /* Prevents iOS auto-zoom */
+        font-size: 16px !important;
     }
 }
 
@@ -94,27 +93,20 @@ input[type=number] {
     -moz-appearance: number-input;
 }
 
-/* --- Date Picker Styling (Centered Text + Icon on Right) --- */
+/* --- Date Picker Styling (Left Aligned + Icon on Right) --- */
 input[type="date"] {
-    text-align: center !important;
-    display: block !important;
-    position: relative;
-    /* Extra right/left padding ensures text stays centered and clear of the icon */
-    padding-right: 2.5rem !important; 
-    padding-left: 2.5rem !important;
+    text-align: left !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
     min-height: 52px;
 }
 
-/* Position the icon absolutely so it doesn't push the centered text */
 input[type="date"]::-webkit-calendar-picker-indicator {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
     cursor: pointer;
-    margin: 0 !important;
-    padding: 0;
-    filter: invert(0.4); /* Matches the slate/emerald theme */
+    margin-left: auto;
+    padding: 0.2rem;
+    filter: invert(0.4);
 }
 
 /* --- Form Inputs --- */
@@ -138,7 +130,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     transition: var(--transition-standard); color: #1e293b;
     font-size: 16px; 
     box-sizing: border-box;
-    text-align: center; /* Centers text in Sprint Name and other text fields */
+    text-align: left; /* Reverted to Left Alignment */
 }
 
 input:focus {
@@ -239,6 +231,7 @@ th:first-child, td:first-child {
     text-align: center !important;
 }
 
+/* Table inputs remain centered for readability in the grid */
 #teamBody input {
     background: transparent;
     border: 1px solid transparent;
