@@ -68,16 +68,21 @@ body {
     box-shadow: 0 20px 40px -12px rgba(15, 23, 42, 0.12);
 }
 
-/* --- Forced Spinner Visibility --- */
+/* --- Forced Spinner Visibility & Enlargement --- */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: inner-spin-button !important;
     opacity: 1 !important;
-    margin-left: 5px;
+    display: block !important;
+    cursor: pointer;
+    /* Forces the button to be taller and visible */
+    height: 30px;
+    width: 16px;
+    margin-left: 2px;
 }
 
 input[type=number] {
-    -moz-appearance: textfield;
+    -moz-appearance: number-input;
 }
 
 /* --- Form Inputs --- */
@@ -204,6 +209,8 @@ th:first-child, td:first-child {
     border: 1px solid transparent;
     border-radius: 0.5rem;
     padding: 0.4rem;
+    /* Added padding to the right to accommodate larger spinners */
+    padding-right: 1.5rem;
     height: 38px;
     transition: var(--transition-standard);
     text-align: center; 
