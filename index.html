@@ -81,13 +81,13 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8">
                             <div class="input-group text-left mb-4 md:mb-0">
                                 <label for="startDate" class="text-xs font-black uppercase tracking-widest text-slate-400 mb-2 block">Start Date</label>
-                                <input type="date" id="startDate" onchange="validateGlobal(this)"
+                                <input type="date" id="startDate" data-placeholder="Pick Start Date" onchange="validateGlobal(this)"
                                     class="w-full bg-white border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none">
                             </div>
 
                             <div class="input-group text-left">
                                 <label for="endDate" class="text-xs font-black uppercase tracking-widest text-slate-400 mb-2 block">End Date</label>
-                                <input type="date" id="endDate" onchange="validateGlobal(this)"
+                                <input type="date" id="endDate" data-placeholder="Pick End Date" onchange="validateGlobal(this)"
                                     class="w-full bg-white border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none">
                             </div>
                         </div>
@@ -139,8 +139,7 @@
                     </section>
 
                     <div class="flex justify-end">
-                        <button onclick="resetToDefault()"
-                            class="px-4 py-2 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-red-500 transition-colors flex items-center gap-2">
+                        <button onclick="resetToDefault()" class="btn-reset">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
