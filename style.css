@@ -159,7 +159,7 @@ body {
 .btn-reset:hover svg { transform: rotate(-180deg); }
 
 /* --- Form Inputs --- */
-.input-group { width: 100%; }
+.input-group { width: 100%; position: relative; }
 
 .input-group label {
     display: block; font-size: 0.7rem; font-weight: 800;
@@ -171,34 +171,64 @@ body {
     width: 100%; 
     height: 48px;
     background: rgba(255, 255, 255, 0.95);
-    border: 1px solid #e2e8f0; border-radius: 0.75rem;
+    border: 1px solid #e2e8f0; 
+    border-radius: 0.75rem;
     padding: 0 1rem;
-    font-weight: 500;
-    transition: all 0.2s ease; color: #1e293b;
+    font-weight: 600;
+    transition: all 0.2s ease; 
+    color: #1e293b;
     font-size: 16px; 
     text-align: center;
-    line-height: 48px; /* Vertical centering without using flex */
+    line-height: 48px;
+    outline: none;
 }
 
-/* Force Native Browser Controls to appear (Spin Buttons) */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
+/* --- Enhanced Spin Buttons --- */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: inner-spin-button !important;
     opacity: 1 !important;
+    cursor: pointer;
+    background: #f1f5f9; /* Subtle background for the button area */
+    border-left: 1px solid #e2e8f0;
+    height: 46px; /* Match input height minus borders */
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    padding: 10px;
+    border-radius: 0 0.75rem 0.75rem 0;
 }
 
-/* Force Calendar Icon to stay visible and aligned */
+/* Offset text for number inputs to keep it perfectly centered */
+input[type="number"] {
+    padding-right: 35px; 
+    padding-left: 35px;
+}
+
+/* --- Enhanced Calendar Icon --- */
 input::-webkit-calendar-picker-indicator {
     opacity: 1 !important;
     display: inline-block !important;
     cursor: pointer;
     vertical-align: middle;
+    margin-right: 5px;
+    transition: var(--transition-standard);
 }
 
-/* Adjust date specifically to balance the icon on the right */
+input::-webkit-calendar-picker-indicator:hover {
+    color: var(--emerald-main);
+    transform: scale(1.1);
+}
+
+/* Specific Date alignment */
 input[type="date"] {
-    padding-right: 0.5rem;
-    padding-left: 2rem; /* Balanced offset for the icon */
+    padding-left: 40px; /* Balance against the calendar icon on the right */
+}
+
+/* --- Standard text alignment --- */
+input[type="text"] {
+    padding: 0 1rem;
+    text-align: left; /* Keep Team Name left-aligned or centered based on preference */
 }
 
 /* Unified Placeholder Styling */
@@ -206,7 +236,6 @@ input[type="date"] {
 ::-webkit-input-placeholder { color: #94a3b8; text-align: center; }
 
 input:focus {
-    outline: none !important;
     border-color: #10b981 !important;
     background-color: #ffffff !important;
     box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
