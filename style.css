@@ -176,32 +176,29 @@ body {
     font-weight: 500;
     transition: all 0.2s ease; color: #1e293b;
     font-size: 16px; 
-    
-    /* Center text visually */
     text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    line-height: 48px; /* Vertical centering without using flex */
 }
 
-/* Compensate for the icon on the right to keep text centered */
-input[type="date"] {
-    padding-left: 40px; /* Adjust this value if needed to "push" the text back to center */
-}
-
-/* Force Spin Buttons (Up/Down) visibility */
+/* Force Native Browser Controls to appear (Spin Buttons) */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: inner-spin-button !important;
     opacity: 1 !important;
 }
 
-/* Force Calendar Icon visibility and placement */
+/* Force Calendar Icon to stay visible and aligned */
 input::-webkit-calendar-picker-indicator {
     opacity: 1 !important;
-    display: block !important;
+    display: inline-block !important;
     cursor: pointer;
-    margin-left: auto; /* Pushes the icon to the far right */
+    vertical-align: middle;
+}
+
+/* Adjust date specifically to balance the icon on the right */
+input[type="date"] {
+    padding-right: 0.5rem;
+    padding-left: 2rem; /* Balanced offset for the icon */
 }
 
 /* Unified Placeholder Styling */
