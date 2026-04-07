@@ -66,7 +66,7 @@ body {
     font-weight: 800;
 }
 
-/* --- Buttons (Flicker-Free) --- */
+/* --- Buttons --- */
 .btn-primary, .btn-export, .btn-share {
     cursor: pointer;
     position: relative;
@@ -124,7 +124,7 @@ body {
 
 .btn-export svg { color: #334155 !important; }
 
-/* --- Reset Button (Dark Slate to Red Hover) --- */
+/* --- Reset Button --- */
 .btn-reset {
     display: flex;
     align-items: center;
@@ -134,12 +134,9 @@ body {
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    
-    /* Default: High-Visibility Dark Slate */
     color: #334155; 
     background: #e2e8f0; 
     border: 1.5px solid #94a3b8;
-    
     border-radius: 0.75rem;
     transition: all 0.2s ease;
     cursor: pointer;
@@ -147,7 +144,6 @@ body {
 }
 
 .btn-reset:hover {
-    /* Hover: Transition to Warning Red */
     background: #fee2e2;
     color: #ef4444;
     border-color: #ef4444;
@@ -160,9 +156,7 @@ body {
     stroke: currentColor;
 }
 
-.btn-reset:hover svg {
-    transform: rotate(-180deg);
-}
+.btn-reset:hover svg { transform: rotate(-180deg); }
 
 /* --- Form Inputs --- */
 .input-group { width: 100%; }
@@ -179,36 +173,19 @@ body {
     border: 1px solid #e2e8f0; border-radius: 0.75rem;
     padding: 0.65rem 0.9rem; font-weight: 500;
     transition: all 0.2s ease; color: #1e293b;
-    -webkit-appearance: none;
-    font-size: 16px; 
+    font-size: 16px; /* Essential to prevent iOS zoom */
 }
+
+/* Unified Placeholder Styling */
+::placeholder { color: #94a3b8; opacity: 1; }
+::-webkit-input-placeholder { color: #94a3b8; }
+::-ms-input-placeholder { color: #94a3b8; }
 
 input:focus {
     outline: none !important;
     border-color: #10b981 !important;
     background-color: #ffffff !important;
     box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
-}
-
-/* --- Date Input Placeholder Fix --- */
-input[type="date"]::before {
-    content: attr(data-placeholder);
-    color: #94a3b8;
-    width: 100%;
-}
-
-input[type="date"]:focus::before,
-input[type="date"]:valid::before {
-    display: none;
-}
-
-input[type="date"]::-webkit-datetime-edit {
-    display: none;
-}
-
-input[type="date"]:focus::-webkit-datetime-edit,
-input[type="date"]:valid::-webkit-datetime-edit {
-    display: inline-block;
 }
 
 /* --- Table Styles --- */
@@ -245,9 +222,8 @@ thead th {
 
 /* --- Toast Notifications --- */
 .toast {
-    background: rgba(239, 68, 68, 0.95);
+    background: rgba(15, 23, 42, 0.9);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
     color: white; padding: 1rem 1.5rem; border-radius: 1rem;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
 }
