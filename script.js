@@ -393,5 +393,5 @@ function showToast(message) {
     setTimeout(() => {
         toast.style.animation = 'toastOut 0.3s ease-in forwards';
         setTimeout(() => toast.remove(), 300);
-    }, 3000);
+    }, 3000); 
 }
