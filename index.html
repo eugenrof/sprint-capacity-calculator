@@ -62,9 +62,9 @@
                     </div>
 
                     <ul class="flex flex-col gap-2 text-[11px] text-blue-600 font-medium list-disc list-inside ml-1 text-left">
-                        <li>Define Sprint Dates for the planning report context</li>
-                        <li>Add/remove/edit team members directly in the table</li>
-                        <li>Use <strong>"Share This Plan"</strong> to save/send the current configuration</li>
+                        <li>Pick Sprint Dates for the planning report</li>
+                        <li>Add/remove/edit team members in the table</li>
+                        <li>Use <strong>"Share This Plan"</strong> to save/send the current state</li>
                     </ul>
                 </section>
 
@@ -78,17 +78,17 @@
                             Sprint Timeline
                         </h3>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div class="input-group text-left">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+                            <div class="input-group text-left mb-4 md:mb-0">
                                 <label for="startDate" class="text-xs font-black uppercase tracking-widest text-slate-400 mb-2 block">Start Date</label>
                                 <input type="date" id="startDate" onchange="validateGlobal(this)"
-                                    class="w-full border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 transition-all outline-none">
+                                    class="w-full bg-white border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none">
                             </div>
 
                             <div class="input-group text-left">
                                 <label for="endDate" class="text-xs font-black uppercase tracking-widest text-slate-400 mb-2 block">End Date</label>
                                 <input type="date" id="endDate" onchange="validateGlobal(this)"
-                                    class="w-full border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 transition-all outline-none">
+                                    class="w-full bg-white border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none">
                             </div>
                         </div>
                     </div>
@@ -97,25 +97,25 @@
                         <div class="input-group text-left">
                             <label for="teamName" class="text-xs font-black uppercase tracking-widest text-slate-400 mb-2 flex justify-between">Team Name (Optional)</label>
                             <input type="text" id="teamName" placeholder="e.g. Team Alpha" maxlength="50"
-                                class="w-full border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 transition-all outline-none">
+                                class="w-full bg-white border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none">
                         </div>
 
                         <div class="input-group text-left">
                             <label for="sprintDays" class="text-xs font-black uppercase tracking-widest text-slate-400 mb-2 block">Sprint Length (Days)</label>
                             <input type="number" id="sprintDays" value="15" onchange="validateGlobal(this)"
-                                class="w-full border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 transition-all outline-none">
+                                class="w-full bg-white border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none">
                         </div>
 
                         <div class="input-group text-left">
                             <label for="publicHolidays" class="text-xs font-black uppercase tracking-widest text-slate-400 mb-2 block">Public Holidays (Days)</label>
                             <input type="number" id="publicHolidays" value="0" onchange="validateGlobal(this)"
-                                class="w-full border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 transition-all outline-none">
+                                class="w-full bg-white border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none">
                         </div>
 
                         <div class="input-group text-left">
                             <label for="avgVelocity" class="text-xs font-black uppercase tracking-widest text-slate-400 mb-2 block">Average Velocity (Story Points)</label>
                             <input type="number" id="avgVelocity" value="45" onchange="validateGlobal(this)"
-                                class="w-full border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 transition-all outline-none">
+                                class="w-full bg-white border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none">
                         </div>
                     </div>
                 </section>
