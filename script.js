@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     startPicker = flatpickr("#startDate", {
         ...commonConfig,
-        onChange: function(selectedDates, dateStr) {
+        onChange: function (selectedDates, dateStr) {
             const currentEnd = document.getElementById('endDate').value;
             if (currentEnd && new Date(dateStr) > new Date(currentEnd)) {
                 showToast("⚠️ Start date cannot be after end date");
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     endPicker = flatpickr("#endDate", {
         ...commonConfig,
-        onChange: function(selectedDates, dateStr) {
+        onChange: function (selectedDates, dateStr) {
             const currentStart = document.getElementById('startDate').value;
             if (currentStart && new Date(dateStr) < new Date(currentStart)) {
                 showToast("⚠️ End date cannot be before start date");
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 2. Prevent scroll wheel from changing number values
-    document.addEventListener('wheel', function(event) {
+    document.addEventListener('wheel', function (event) {
         if (document.activeElement.type === 'number') {
             document.activeElement.blur();
         }
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    calculate(); 
+    calculate();
 });
 
 /**
@@ -105,13 +105,13 @@ function showToast(message) {
     // PREVENT STACKING: Check if the same message is already visible
     const existingToasts = Array.from(container.querySelectorAll('.toast'));
     const isDuplicate = existingToasts.some(t => t.innerText === message);
-    if (isDuplicate) return; 
+    if (isDuplicate) return;
 
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.innerText = message;
     container.appendChild(toast);
-    
+
     setTimeout(() => {
         toast.style.opacity = '0';
         setTimeout(() => toast.remove(), 500);
@@ -149,11 +149,11 @@ function calculate() {
 
     document.getElementById('resTotalDays').innerText = `${formatNum(totalAvailableDays)} Days`;
     document.getElementById('resCapacity').innerText = Math.round(capacityPerc) + '%';
-    
+
     const velocityEl = document.getElementById('resPlanVelocity');
     velocityEl.innerText = Math.round(planVelocity);
 
-    let statusColor = "#ef4444"; 
+    let statusColor = "#ef4444";
     if (capacityPerc >= 75) statusColor = "#10b981";
     else if (capacityPerc >= 50) statusColor = "#f97316";
 
@@ -163,7 +163,7 @@ function calculate() {
         bar.style.backgroundColor = statusColor;
     }
     velocityEl.style.color = statusColor;
-    
+
     saveState();
 }
 
@@ -233,7 +233,7 @@ function shareConfiguration() {
     };
     const encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
     const shareUrl = `${window.location.origin}${window.location.pathname}?plan=${encodedData}`;
-    
+
     navigator.clipboard.writeText(shareUrl).then(() => {
         showToast("🔗 Share link copied!");
     });
@@ -253,10 +253,10 @@ function loadState() {
             if (decodedData.t) {
                 team = decodedData.t.map(str => {
                     const [name, allocation, daysOff] = str.split('|');
-                    return { 
-                        name: decodeURIComponent(name), 
-                        allocation: parseFloat(allocation), 
-                        daysOff: parseFloat(daysOff) 
+                    return {
+                        name: decodeURIComponent(name),
+                        allocation: parseFloat(allocation),
+                        daysOff: parseFloat(daysOff)
                     };
                 });
             }
@@ -280,7 +280,7 @@ function loadState() {
             document.getElementById('publicHolidays').value = savedData.holidays || 0;
             document.getElementById('avgVelocity').value = savedData.velocity || 45;
             team = savedData.team || team;
-        } catch(e) { console.error(e); }
+        } catch (e) { console.error(e); }
     }
 }
 
@@ -299,45 +299,45 @@ function saveState() {
 
 function updateMainHeader(name) {
     const cleanName = name.trim().substring(0, 25);
-    const newTitle = cleanName ? `Sprint Pulse | ${cleanName}` : "Sprint Capacity Planner";
+    const newTitle = cleanName ? `Sprint Cap | ${cleanName}` : "Sprint Capacity Planner";
     const h1 = document.querySelector('h1');
     if (h1) h1.innerText = newTitle;
-    document.title = newTitle; 
+    document.title = newTitle;
 }
 
 function formatNum(num) {
     return Number.isInteger(num) ? num.toString() : num.toFixed(1);
 }
 
-function addRow() { 
+function addRow() {
     // SCRUM VALIDATION: Limit to 10 members
     if (team.length >= 10) {
         showToast("⚠️ Scrum teams typically shouldn't exceed 10 members for optimal agility");
         // We return early so the member isn't actually added
-        return; 
+        return;
     }
 
     const nextNumber = team.length + 1;
-    team.push({ 
-        name: `Member ${nextNumber}`, 
-        allocation: 100, 
-        daysOff: 0 
-    }); 
-    
-    renderTable(); 
+    team.push({
+        name: `Member ${nextNumber}`,
+        allocation: 100,
+        daysOff: 0
+    });
+
+    renderTable();
     saveState();
 }
 
 function removeRow(index) {
-    if (team.length > 1) { team.splice(index, 1); renderTable(); } 
+    if (team.length > 1) { team.splice(index, 1); renderTable(); }
     else { showToast("⚠️ Team must have at least one member"); }
 }
 
-function resetToDefault() { 
-    if (confirm("Reset all data?")) { 
-        localStorage.removeItem('sprintPlannerState'); 
-        window.location.reload(); 
-    } 
+function resetToDefault() {
+    if (confirm("Reset all data?")) {
+        localStorage.removeItem('sprintPlannerState');
+        window.location.reload();
+    }
 }
 
 function exportToPDF() {
@@ -345,7 +345,7 @@ function exportToPDF() {
     const doc = new jsPDF();
     const teamNameInput = document.getElementById('teamName').value.trim().substring(0, 25);
     const teamDisplayName = teamNameInput || "Team";
-    const primaryEmerald = [52, 211, 153]; 
+    const primaryEmerald = [52, 211, 153];
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
 
@@ -376,7 +376,7 @@ function exportToPDF() {
     const sprintLength = parseFloat(document.getElementById('sprintDays').value) || 0;
     const holidayValue = parseFloat(document.getElementById('publicHolidays').value) || 0;
     const workingWindow = Math.max(0, sprintLength - holidayValue);
-    
+
     const rows = team.map(m => [
         m.name,
         m.allocation + '%',
@@ -390,7 +390,7 @@ function exportToPDF() {
         body: rows,
         headStyles: { fillColor: primaryEmerald, halign: 'center' },
         styles: { halign: 'center' },
-        columnStyles: { 
+        columnStyles: {
             0: { halign: 'center' },
             1: { halign: 'center' },
             2: { halign: 'center' },
