@@ -100,6 +100,7 @@ To ensure maximum compatibility across all Markdown viewers, the tool uses the f
 ---
 
 ## ⚖️ License & Credits 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 Developed by **Eugen Rof** (2026). Part of the **Scrum Master Toolset**.
 [GitHub Repository](https://github.com/eugenrof/sprint-capacity-planner)
