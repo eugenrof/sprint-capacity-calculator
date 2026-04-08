@@ -1,4 +1,8 @@
-# Sprint Capacity Planner | Agile Team Velocity Tool
+# SprintCap | Sprint Capacity Planner
+
+A lightweight, logic-driven tool built to simplify the "planning math" that often slows down Scrum teams. 
+
+Most teams rely on complex, fragile spreadsheets to calculate capacity. **SprintCap** offers a reactive, browser-based alternative to help practitioners gain clear visibility into team commitment based on real-world availability.
 
 [![GitHub Pages](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=github)](https://eugenrof.github.io/sprint-capacity-planner)
 
@@ -9,6 +13,7 @@ In the **Scrum Framework**, the Sprint Planning event is the heartbeat of a team
 **Sprint Capacity Planner** was developed as a specialized utility to bridge the gap between abstract story points and concrete human availability. By providing a structured, mathematical approach to team capacity, it ensures that the "Forecast" made at the beginning of a sprint is both realistic and sustainable.
 
 ### Why this tool?
+As a **Professional Scrum Master (PSM II)**, I found that planning sessions often lost momentum due to manual calculations. I wanted to create a utility that respects the Scrum framework while removing the administrative friction of calculating man-days, focus factors, and public holidays.
 
 * **Precision Planning**: Replaces vague estimates with a concrete "Available Days" metric, allowing the team to see exactly how holidays and personal leave impact their delivery power.
 * **Efficiency**: Reduces the time spent on manual spreadsheets or fighting complex configurations in heavy Jira/Azure DevOps environments during live planning sessions.
@@ -53,16 +58,12 @@ sprint-capacity-planner/
 ```
 ---
 
-## 🛠️ Key Features
-
-* **Dynamic Capacity Calculation**: Automatically adjusts team velocity based on specific working windows and individual availability.
-* **Smart Validations**:
-    * **Holiday Safety**: Public holidays cannot exceed the sprint duration. If they match or exceed the sprint length, they auto-reset to 0 to maintain logic.
-    * **Allocation Capping**: Individual team member allocation is strictly capped at **100%** to prevent over-planning.
-    * **Negative Value Protection**: All numerical inputs are guarded against negative values, automatically resetting to 0.
-* **PDF Reporting**: Generate and export a professional summary of the sprint plan, including metrics and detailed team breakdowns, with a single click.
-* **Instant Shareability**: The application state is synchronized with the browser URL. You can share the exact configuration of your team and sprint by simply copying and sending the link.
-* **Persistent State**: Data remains intact across page refreshes thanks to URL-based state management.
+## Key Features
+- **Privacy-First:** No accounts, no databases, and no tracking. All data is processed locally in your browser.
+- **Smart State Persistence:** Your configuration is automatically saved in your local storage.
+- **Deep-Link Sharing:** Generate a unique URL (Base64 encoded) to share your specific capacity plan with team members or stakeholders.
+- **Scrum Guardrails:** Built-in guidance for optimal team sizes (Scrum Guide alignment) and real-time velocity adjustments.
+- **Professional Reporting:** Export your capacity plan to a clean PDF for Sprint documentation.
 
 ---
 
@@ -80,11 +81,11 @@ To ensure maximum compatibility across all Markdown viewers, the tool uses the f
 
 4. **Recommended Velocity** `Average Velocity × Team Capacity %`
 
-### Built With
-
-* **Tailwind CSS**: For a modern, responsive, and "glassmorphic" UI.
-* **Vanilla JavaScript**: High-performance logic without the overhead of heavy frameworks.
-* **jsPDF & AutoTable**: Powering the professional PDF export functionality.
+### Technical Stack
+- **Frontend:** HTML5, Tailwind CSS
+- **Interactivity:** Vanilla JavaScript (ES6+)
+- **Libraries:** Flatpickr (Date handling), jsPDF (PDF generation)
+- **Deployment:** Netlify
 
 ---
 
@@ -101,6 +102,14 @@ To ensure maximum compatibility across all Markdown viewers, the tool uses the f
 
 ## ⚖️ License & Credits 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📝 About the Author
+I am a **Senior QA Engineer** and a certified **Professional Scrum Master (PSM I & PSM II)**, with a passion for testing & building tools that enhance team agility and transparency. This project was born out of a personal need and is shared freely for the Agile community.
+
+If you have suggestions or find this tool helpful in your Sprints, feel free to explore the code or reach out via GitHub.
+
+---
+*Built for practitioners, by a practitioner.*
 
 Developed by **Eugen Rof** (2026). Part of the **Scrum Master Toolset**.
 [GitHub Repository](https://github.com/eugenrof/sprint-capacity-planner)
