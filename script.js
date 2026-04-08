@@ -309,7 +309,20 @@ function formatNum(num) {
     return Number.isInteger(num) ? num.toString() : num.toFixed(1);
 }
 
-function addRow() { team.push({ name: 'New Member', allocation: 100, daysOff: 0 }); renderTable(); }
+function addRow() { 
+    // Calculate the next number based on the current length
+    const nextNumber = team.length + 1;
+    
+    // Use a template literal to create the name "Member X"
+    team.push({ 
+        name: `Member ${nextNumber}`, 
+        allocation: 100, 
+        daysOff: 0 
+    }); 
+    
+    renderTable(); 
+    saveState(); // Ensure the new member is saved to local storage
+}
 
 function removeRow(index) {
     if (team.length > 1) { team.splice(index, 1); renderTable(); } 
