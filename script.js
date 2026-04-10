@@ -2,27 +2,27 @@
  * Sprint Capacity Planner
  * Author: Eugen Rof
  * Year: 2026
- * Updates: iOS Alignment Fix, Scroll-to-Change Prevention, Toast De-duplication.
+ * Updates: Adaptive Toasts for Add/Remove, Success/Warning styling, and bug fixes.
  */
 
 let team = [
-    { name: 'Member 1', allocation: 100, daysOff: 0 },
-    { name: 'Member 2', allocation: 100, daysOff: 0 },
-    { name: 'Member 3', allocation: 100, daysOff: 0 },
-    { name: 'Member 4', allocation: 100, daysOff: 0 },
-    { name: 'Member 5', allocation: 100, daysOff: 0 }
+    { name: '', allocation: 100, daysOff: 0 },
+    { name: '', allocation: 100, daysOff: 0 },
+    { name: '', allocation: 100, daysOff: 0 },
+    { name: '', allocation: 100, daysOff: 0 },
+    { name: '', allocation: 100, daysOff: 0 }
 ];
 
 let startPicker, endPicker;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Initialize Flatpickr with iOS Alignment & Mobile Native Suppress fixes
+    // 1. Initialize Flatpickr
     const commonConfig = {
         altInput: true,
         altFormat: "F j, Y",
         dateFormat: "Y-m-d",
-        disableMobile: true, // Prevents iOS native date wheel
-        static: true,        // IMPORTANT: Anchors dropdown to input for iOS alignment
+        disableMobile: true,
+        static: true,
         position: "auto left"
     };
 
@@ -102,13 +102,16 @@ function showToast(message) {
     const container = document.getElementById('toastContainer');
     if (!container) return;
 
-    // PREVENT STACKING: Check if the same message is already visible
     const existingToasts = Array.from(container.querySelectorAll('.toast'));
     const isDuplicate = existingToasts.some(t => t.innerText === message);
     if (isDuplicate) return;
 
     const toast = document.createElement('div');
-    toast.className = 'toast';
+    
+    // Check if the message is a warning or a success/info message
+    const isWarning = message.includes('⚠️');
+    toast.className = isWarning ? 'toast toast-error' : 'toast toast-success';
+    
     toast.innerText = message;
     container.appendChild(toast);
 
@@ -163,23 +166,21 @@ function calculate() {
         bar.style.backgroundColor = statusColor;
     }
     velocityEl.style.color = statusColor;
-
     saveState();
 }
 
 function updateMember(index, field, value) {
-    if (field === 'name') {
-        team[index].name = value.trim() ? value.substring(0, 25) : "Member " + (index + 1);
-    } else if (field === 'allocation') {
-        team[index].allocation = Math.min(100, Math.max(0, parseFloat(value) || 0));
-    } else if (field === 'daysOff') {
+    if (field === 'allocation') {
+        let val = parseFloat(value) || 0;
+        if (val < 0) { val = 0; showToast("⚠️ Allocation cannot be negative"); }
+        else if (val > 100) { val = 100; showToast("⚠️ Max allocation is 100%"); }
+        team[index].allocation = val;
+    } 
+    else if (field === 'daysOff') {
         const sprintDays = parseFloat(document.getElementById('sprintDays').value) || 0;
         let val = parseFloat(value) || 0;
-        if (val < 0) {
-            val = 0;
-            showToast("⚠️ Values cannot be negative");
-        }
-        else if (val > sprintDays) val = sprintDays;
+        if (val < 0) { val = 0; showToast("⚠️ Values cannot be negative"); }
+        else if (val > sprintDays) { val = sprintDays; showToast("⚠️ Days off cannot exceed sprint days"); }
         team[index].daysOff = val;
     }
     renderTable();
@@ -188,39 +189,66 @@ function updateMember(index, field, value) {
 function renderTable() {
     const body = document.getElementById('teamBody');
     if (!body) return;
+    
+    const activeId = document.activeElement.id;
+    const selectionStart = document.activeElement.selectionStart;
+
     body.innerHTML = '';
 
     team.forEach((member, index) => {
         const row = document.createElement('tr');
-        row.className = "row-hover transition-colors";
+        row.className = "hover:bg-slate-50 transition-colors border-b border-slate-100";
         row.innerHTML = `
             <td class="px-6 py-4">
-                <input type="text" value="${member.name}" maxlength="25" onchange="updateMember(${index}, 'name', this.value)" 
-                class="w-full bg-transparent font-semibold border-none focus:ring-0 px-1">
+                <input type="text" 
+                       id="name-input-${index}"
+                       value="${member.name}" 
+                       placeholder="Name ${index + 1}"
+                       maxlength="25" 
+                       class="w-full bg-transparent font-semibold border-none focus:ring-0 px-1 truncate outline-none"
+                       title="${member.name || 'Name ' + (index + 1)}">
             </td>
             <td class="px-6 py-4 text-center">
-                <input type="number" step="1" value="${member.allocation}" onchange="updateMember(${index}, 'allocation', this.value)" 
-                class="w-24 text-center bg-slate-50 rounded-lg p-1 border-none focus:ring-1 focus:ring-emerald-500">
+                <input type="number" id="alloc-input-${index}" step="1" value="${member.allocation}" 
+                class="w-20 mx-auto block bg-slate-50 rounded-lg p-1 border-none focus:ring-1 focus:ring-emerald-500 text-center outline-none">
             </td>
             <td class="px-6 py-4 text-center">
-                <input type="number" step="1" value="${member.daysOff}" onchange="updateMember(${index}, 'daysOff', this.value)" 
-                class="w-24 text-center bg-slate-50 rounded-lg p-1 border-none focus:ring-1 focus:ring-emerald-500">
+                <input type="number" id="off-input-${index}" step="1" value="${member.daysOff}" 
+                class="w-20 mx-auto block bg-slate-50 rounded-lg p-1 border-none focus:ring-1 focus:ring-emerald-500 text-center outline-none">
             </td>
             <td class="px-6 py-4 text-center font-bold text-slate-600" id="avail-${index}">0</td>
-            <td class="px-6 py-4 text-right">
+            <td class="px-4 py-4 text-center">
                 <button onclick="removeRow(${index})" class="text-slate-300 hover:text-red-500 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                        </path>
+                    </svg>
                 </button>
             </td>
         `;
         body.appendChild(row);
+
+        document.getElementById(`name-input-${index}`).addEventListener('input', (e) => {
+            if (e.target.value.length >= 25) showToast("⚠️ Member name reached the 25 character limit");
+            team[index].name = e.target.value.substring(0, 25);
+            saveState();
+        });
+
+        document.getElementById(`alloc-input-${index}`).addEventListener('change', (e) => updateMember(index, 'allocation', e.target.value));
+        document.getElementById(`off-input-${index}`).addEventListener('change', (e) => updateMember(index, 'daysOff', e.target.value));
     });
+
+    if (activeId) {
+        const el = document.getElementById(activeId);
+        if (el) {
+            el.focus();
+            if (selectionStart && el.type === 'text') el.setSelectionRange(selectionStart, selectionStart);
+        }
+    }
     calculate();
 }
 
-/**
- * Persistence & Sharing Logic
- */
 function shareConfiguration() {
     const state = {
         n: document.getElementById('teamName').value,
@@ -310,27 +338,26 @@ function formatNum(num) {
 }
 
 function addRow() {
-    // SCRUM VALIDATION: Limit to 10 members
     if (team.length >= 10) {
-        showToast("⚠️ Scrum teams typically shouldn't exceed 10 members for optimal agility");
-        // We return early so the member isn't actually added
+        showToast("⚠️ Scrum teams typically shouldn't exceed 10 members");
         return;
     }
-
-    const nextNumber = team.length + 1;
-    team.push({
-        name: `Member ${nextNumber}`,
-        allocation: 100,
-        daysOff: 0
-    });
-
+    team.push({ name: '', allocation: 100, daysOff: 0 });
+    showToast("👤 New team member added");
     renderTable();
     saveState();
 }
 
 function removeRow(index) {
-    if (team.length > 1) { team.splice(index, 1); renderTable(); }
-    else { showToast("⚠️ Team must have at least one member"); }
+    if (team.length > 1) { 
+        const removedName = team[index].name || `Member ${index + 1}`;
+        team.splice(index, 1); 
+        showToast(`🗑️ Removed ${removedName}`);
+        renderTable(); 
+        saveState();
+    } else { 
+        showToast("⚠️ Team must have at least one member"); 
+    }
 }
 
 function resetToDefault() {
@@ -377,8 +404,8 @@ function exportToPDF() {
     const holidayValue = parseFloat(document.getElementById('publicHolidays').value) || 0;
     const workingWindow = Math.max(0, sprintLength - holidayValue);
 
-    const rows = team.map(m => [
-        m.name,
+    const rows = team.map((m, i) => [
+        m.name || `Name ${i + 1}`,
         m.allocation + '%',
         m.daysOff,
         formatNum(Math.max(0, workingWindow - m.daysOff) * (m.allocation / 100))
@@ -390,12 +417,7 @@ function exportToPDF() {
         body: rows,
         headStyles: { fillColor: primaryEmerald, halign: 'center' },
         styles: { halign: 'center' },
-        columnStyles: {
-            0: { halign: 'center' },
-            1: { halign: 'center' },
-            2: { halign: 'center' },
-            3: { halign: 'center' }
-        }
+        columnStyles: { 0: { halign: 'center' }, 1: { halign: 'center' }, 2: { halign: 'center' }, 3: { halign: 'center' } }
     });
 
     doc.save(`Sprint_Capacity_Report_${teamDisplayName.replace(/\s+/g, '_')}.pdf`);
