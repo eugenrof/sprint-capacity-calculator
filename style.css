@@ -1,204 +1,215 @@
 /**
- * Sprint Capacity Planner - Stylesheet
+ * Sprint Capacity Planner - Final Polish
  * Author: Eugen Rof
- * Updates: Restored number spinners, kept iOS alignment & scroll protection
+ * Updates: Enhanced Radial Glow Background, Slim Steppers, Adaptive Toasts.
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+ @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-/* Basic reset */
-* {
-    box-sizing: border-box;
-}
-
-:root {
-    --emerald-main: #10b981;
-    --emerald-hover: #059669;
-    --teal-main: #0d9488;
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(255, 255, 255, 0.5);
-    --transition-standard: all 0.2s ease-in-out;
-}
-
-body {
-    font-family: "Inter", sans-serif;
-    background-color: #f1f5f9;
-    background-image: 
-        radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.18) 0px, transparent 45%),
-        radial-gradient(at 100% 100%, rgba(13, 148, 136, 0.18) 0px, transparent 45%),
-        radial-gradient(at 50% 50%, rgba(255, 255, 255, 0.5) 0px, transparent 100%);
-    background-attachment: fixed;
-    margin: 0;
-    min-height: 100vh;
-    position: relative;
-    overflow-x: hidden;
-}
-
-/* --- Glassmorphism Effect --- */
-.glass {
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px) saturate(160%);
-    -webkit-backdrop-filter: blur(12px) saturate(160%);
-    border: 1px solid var(--glass-border);
-    box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.06);
-    border-radius: 1.25rem;
-    transition: var(--transition-standard);
-    will-change: box-shadow, border-color;
-}
-
-.glass:hover {
-    border-color: rgba(16, 185, 129, 0.4);
-    box-shadow: 0 20px 40px -12px rgba(15, 23, 42, 0.12);
-}
-
-/* --- Typography --- */
-.gradient-text {
-    background: linear-gradient(135deg, var(--emerald-main) 0%, var(--teal-main) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: 800;
-}
-
-/* --- Buttons --- */
-.btn-primary, .btn-export {
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.2s ease;
-    backface-visibility: hidden;
-    transform: translateZ(0);
-}
-
-.btn-primary {
-    background: var(--emerald-main);
-    color: white;
-    padding: 0.75rem 1.75rem;
-    border-radius: 0.75rem;
-    font-weight: 700;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-}
-
-.btn-primary:hover {
-    background: var(--emerald-hover);
-    transform: scale(1.02);
-}
-
-/* --- Flatpickr Customization --- */
-.flatpickr-calendar {
-    background: rgba(255, 255, 255, 0.95) !important;
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border) !important;
-    border-radius: 1rem !important;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
-    font-family: "Inter", sans-serif !important;
-}
-
-.flatpickr-calendar.static {
-    margin-left: 0 !important;
-    left: auto !important;
-}
-
-.flatpickr-day.selected, .flatpickr-day.selected:hover {
-    background: var(--emerald-main) !important;
-    border-color: var(--emerald-main) !important;
-}
-
-/* --- Form Inputs & Spinners --- */
-
-/* Restoring number spinners for Chrome, Safari, Edge, Opera */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: inner-spin-button !important;
-    opacity: 1 !important;
-}
-
-/* Restoring number spinners for Firefox */
-input[type="number"] {
-    -moz-appearance: number-input !important;
-    appearance: auto !important;
-}
-
-.input-group label {
-    display: block; 
-    font-size: 0.7rem; 
-    font-weight: 800;
-    text-transform: uppercase; 
-    color: #64748b; 
-    margin-bottom: 0.4rem;
-    letter-spacing: 0.05em;
-}
-
-.input-group input {
-    width: 100%; 
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid #e2e8f0; 
-    border-radius: 0.75rem;
-    padding: 0.65rem 0.9rem; 
-    font-weight: 500;
-    transition: all 0.2s ease; 
-    color: #1e293b;
-    font-size: 16px; 
-}
-
-input:focus {
-    outline: none !important;
-    border-color: var(--emerald-main) !important;
-    background-color: #ffffff !important;
-    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
-}
-
-/* --- Table Styles --- */
-thead th {
-    background-color: #f8fafc !important;
-    border-bottom: 2px solid #e2e8f0 !important;
-    color: #475569 !important;
-    font-size: 0.7rem;
-    letter-spacing: 0.05em;
-}
-
-#teamBody tr:hover {
-    background-color: rgba(16, 185, 129, 0.04);
-}
-
-/* --- Results & Progress --- */
-.result-card {
-    background: white;
-    transition: transform 0.3s ease;
-}
-
-#capacityBar {
-    height: 100%;
-    transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.4s ease;
-}
-
-/* --- Toast Notifications --- */
-#toastContainer {
-    pointer-events: none; 
-}
-
-.toast {
-    pointer-events: auto;
-    background: #1e293b;
-    color: white;
-    padding: 0.75rem 1.25rem;
-    border-radius: 0.75rem;
-    font-weight: 600;
-    font-size: 0.85rem;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    animation: slideUp 0.3s ease-out;
-    margin-top: 0.5rem;
-    border-left: 4px solid #ef4444;
-}
-
-@keyframes slideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-/* Custom Scrollbar */
-.custom-scrollbar::-webkit-scrollbar { height: 6px; }
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #cbd5e1; 
-    border-radius: 20px;
-}
+ :root {
+     --emerald-main: #10b981;
+     --teal-main: #0d9488;
+     --glass-bg: rgba(255, 255, 255, 0.88); 
+     --glass-border: rgba(255, 255, 255, 0.6);
+     --col-padding: 1.5rem; 
+ }
+ 
+ body {
+     font-family: "Inter", sans-serif;
+     background-color: #f1f5f9; 
+     /* Enhanced background with pronounced green/teal blooms in corners */
+     background-image: 
+         radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.25) 0px, transparent 45%),
+         radial-gradient(at 100% 100%, rgba(13, 148, 136, 0.25) 0px, transparent 45%),
+         radial-gradient(at 100% 0%, rgba(51, 65, 85, 0.05) 0px, transparent 40%),
+         radial-gradient(at 0% 100%, rgba(51, 65, 85, 0.05) 0px, transparent 40%);
+     background-attachment: fixed;
+     margin: 0;
+     padding: 20px;
+     min-height: 100vh;
+ }
+ 
+ .glass {
+     background: var(--glass-bg);
+     backdrop-filter: blur(20px) saturate(180%);
+     border: 1px solid var(--glass-border);
+     border-radius: 1.5rem;
+     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+     padding: 2rem;
+     max-width: 900px;
+     margin: 0 auto;
+ }
+ 
+ /* --- Top Config Grid --- */
+ .config-section {
+     display: grid;
+     grid-template-columns: repeat(2, 1fr);
+     gap: 1.5rem;
+     margin-bottom: 2.5rem;
+ }
+ 
+ .input-group label {
+     display: block; 
+     font-size: 0.7rem; 
+     font-weight: 800;
+     text-transform: uppercase; 
+     color: #64748b; 
+     margin-bottom: 0.5rem; 
+     letter-spacing: 0.05em;
+ }
+ 
+ .input-group input {
+     width: 100%; 
+     background: white;
+     border: 1px solid #e2e8f0; 
+     border-radius: 0.75rem;
+     padding: 0 1rem; 
+     font-weight: 500;
+     color: #1e293b;
+     font-size: 14px; 
+     height: 40px;
+     outline: none;
+     transition: all 0.2s ease;
+ }
+ 
+ .input-group input:focus {
+     border-color: var(--emerald-main);
+     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+ }
+ 
+ /* --- Table Styles --- */
+ .table-container {
+     border: 1px solid #e2e8f0;
+     border-radius: 1rem;
+     overflow: hidden;
+     background: white;
+ }
+ 
+ table {
+     width: 100%;
+     border-collapse: collapse;
+     table-layout: fixed;
+ }
+ 
+ thead th {
+     background-color: #f8fafc;
+     color: #64748b;
+     font-size: 0.7rem;
+     font-weight: 800;
+     text-transform: uppercase;
+     letter-spacing: 0.05em;
+     padding: 1.25rem 0.5rem;
+     border-bottom: 1px solid #e2e8f0;
+ }
+ 
+ th:first-child, td:first-child {
+     padding-left: var(--col-padding) !important;
+     text-align: left;
+     width: 35%;
+ }
+ 
+ th:nth-child(2), td:nth-child(2),
+ th:nth-child(3), td:nth-child(3),
+ th:nth-child(4), td:nth-child(4) {
+     text-align: center;
+     width: 20%;
+ }
+ 
+ /* --- Inputs within Table --- */
+ #teamBody td:first-child input[type="text"] {
+     background: transparent;
+     border: none;
+     font-weight: 700;
+     color: #0f172a;
+     font-size: 0.95rem;
+     padding: 4px 0;
+     outline: none;
+     width: 95%;
+ }
+ 
+ #teamBody input[type="number"] {
+     height: 34px;
+     width: 75px; 
+     background: #ffffff;
+     border: 1px solid #cbd5e1;
+     border-radius: 8px;
+     font-weight: 600;
+     color: #1e293b;
+     text-align: center;
+     padding-left: 4px;
+     padding-right: 24px !important; 
+     position: relative;
+     outline: none;
+     -moz-appearance: textfield;
+ }
+ 
+ #teamBody input[type="number"]::-webkit-inner-spin-button,
+ #teamBody input[type="number"]::-webkit-outer-spin-button {
+     -webkit-appearance: block !important; 
+     opacity: 1 !important;
+     position: absolute;
+     right: 0;
+     top: 0;
+     height: 100%;
+     width: 22px;
+     background-color: #f1f5f9;
+     border-left: 1px solid #cbd5e1;
+     cursor: pointer;
+     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 15l-6-6-6 6'/%3E%3C/svg%3E"), 
+                       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+     background-position: center top 4px, center bottom 4px;
+     background-repeat: no-repeat;
+ }
+ 
+ /* --- Adaptive Toasts --- */
+ #toastContainer {
+     position: fixed;
+     bottom: 2rem;
+     right: 2rem;
+     z-index: 9999;
+     display: flex;
+     flex-direction: column;
+     align-items: flex-end;
+     gap: 0.75rem;
+ }
+ 
+ .toast {
+     width: max-content;
+     max-width: 400px;
+     padding: 0.9rem 1.4rem;
+     border-radius: 0.85rem;
+     font-size: 0.85rem;
+     font-weight: 600;
+     background: #1e293b; 
+     color: #f8fafc; 
+     box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.4);
+     animation: slideIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+     display: flex;
+     align-items: center;
+     white-space: pre-wrap;
+     transition: opacity 0.5s ease;
+ }
+ 
+ .toast-success { border-left: 6px solid #10b981; }
+ .toast-error { border-left: 6px solid #ef4444; }
+ 
+ @keyframes slideIn {
+     from { transform: translateX(100%); opacity: 0; }
+     to { transform: translateX(0); opacity: 1; }
+ }
+ 
+ /* --- Responsive --- */
+ @media (max-width: 640px) {
+     .config-section { grid-template-columns: 1fr; }
+     .glass { padding: 1.25rem; }
+     
+     #toastContainer { 
+         left: 1rem; 
+         right: 1rem; 
+         bottom: 1rem; 
+         align-items: center;
+     }
+     
+     .toast { width: auto; max-width: 100%; }
+     #teamBody input[type="number"] { width: 65px; }
+ }
